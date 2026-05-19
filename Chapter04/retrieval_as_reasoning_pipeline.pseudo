@@ -1,0 +1,18 @@
+step(task):
+
+    intent = decide_retrieval_intent(task)
+
+    sources = route_sources(intent, task)
+
+    candidates = retrieve_hybrid(sources, task)
+
+    recall_ready = compress(candidates, task)
+
+    prompt = assemble_prompt(
+        system_rules,
+        semantic_context,
+        task,
+        recall_ready
+    )
+
+    return model(prompt)
