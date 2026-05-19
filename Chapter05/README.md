@@ -39,4 +39,3 @@ The two uploaded PDFs were byte-for-byte identical, so the chapter was extracted
 - Listings 5.4a, 5.4b, and 5.4c are kept as separate files because they are presented as separate sub-listings in the chapter.
 - Several files are intentionally partial examples from the book and are preserved as chapter snippets rather than expanded into standalone runnable modules.
 - Obvious PDF artifacts were normalized only where the intent was clear, including indentation recovery from the monospace layout and conversion of typographic punctuation to plain ASCII where needed.
-- The duplicated `from playwright.async_api import async_playwright` line in Listing 5.19 was preserved because it appears that way in the source PDF.
