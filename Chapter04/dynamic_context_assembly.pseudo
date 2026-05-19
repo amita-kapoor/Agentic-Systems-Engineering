@@ -1,0 +1,19 @@
+for each agent step:
+
+    prompt = []
+
+    prompt.add(system_instructions)
+
+    prompt.add(semantic_memory.compact_view())
+
+    prompt.add(current_task)
+
+    prompt.add(active_subgoal)
+
+    if recall_ready_context.exists():
+
+        prompt.add(recall_ready_context)
+
+    prompt.add(response_instructions)
+
+    response = model(prompt)
