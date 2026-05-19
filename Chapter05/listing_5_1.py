@@ -3,13 +3,15 @@ class Status(Enum):
     NOT_FOUND = "not_found"
     AMBIGUOUS = "ambiguous"
 
+
 class CustomerLookupResult:
     def __init__(self, status, customer=None, candidates=None):
         self.status = status
         self.customer = customer
         self.candidates = candidates
 
-result = get_customer(customer_id)
+
+result = get_customer(customer_id)  #A
 
 if result.status == Status.OK:
     process_customer(result.customer)
