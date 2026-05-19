@@ -1,6 +1,12 @@
 # Chapter 5 Listings
 
-Extracted from `ch05_kapoor - Google Docs.pdf`.
+This folder contains the extracted code listings for Chapter 5, "The Action Engine".
+
+Source PDFs:
+- `01-ch05_kapoor-Google-Docs.pdf`
+- `02-ch05_kapoor-Google-Docs-2-.pdf`
+
+The two uploaded PDFs were byte-for-byte identical, so the chapter was extracted once and organized here using the repository's flat `listing_5_x.*` naming convention.
 
 | Listing | File | Description |
 |---|---|---|
@@ -26,3 +32,11 @@ Extracted from `ch05_kapoor - Google Docs.pdf`.
 | 5.18 | [`listing_5_18.py`](listing_5_18.py) | Running the complete action engine end to end |
 | 5.19 | [`listing_5_19.py`](listing_5_19.py) | A minimal browser automation tool using page interaction |
 | 5.20 | [`listing_5_20.py`](listing_5_20.py) | Allowlisted and constrained shell execution |
+
+## Notes
+
+- Listing 5.3 is preserved as JSON because the chapter presents it as a schema rather than Python code.
+- Listings 5.4a, 5.4b, and 5.4c are kept as separate files because they are presented as separate sub-listings in the chapter.
+- Several files are intentionally partial examples from the book and are preserved as chapter snippets rather than expanded into standalone runnable modules.
+- Obvious PDF artifacts were normalized only where the intent was clear, including indentation recovery from the monospace layout and conversion of typographic punctuation to plain ASCII where needed.
+- The duplicated `from playwright.async_api import async_playwright` line in Listing 5.19 was preserved because it appears that way in the source PDF.
