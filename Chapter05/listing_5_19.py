@@ -1,7 +1,7 @@
 from playwright.async_api import async_playwright
 from pydantic import BaseModel
 from typing import Literal, Optional
-from playwright.async_api import async_playwright
+
 
 
 class BrowserReadInput(BaseModel):
