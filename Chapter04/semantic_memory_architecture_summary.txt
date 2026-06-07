@@ -1,0 +1,7 @@
+Service: checkout-api
+Dependencies: payments-service, redis-cache
+Timeout policy: calls payments-service with 300ms timeout
+Expected environment variables:
+  PAYMENTS_BASE_URL
+  REDIS_URL
+  REQUEST_TIMEOUT_MS
