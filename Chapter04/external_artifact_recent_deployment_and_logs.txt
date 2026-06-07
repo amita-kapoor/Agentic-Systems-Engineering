@@ -1,0 +1,5 @@
+deploy: checkout-api v1.18.0 -> prod
+config: REQUEST_TIMEOUT_MS=250
+log: upstream timeout calling payments-service
+log: 503 returned to client
+log: observed latency ~400ms
