@@ -1,0 +1,4 @@
+Incident: intermittent 503s after deployment
+Cause: REQUEST_TIMEOUT_MS set too low
+Signal: payments-service latency exceeded 300ms
+Resolution: increase timeout to 800ms and redeploy
