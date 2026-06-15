@@ -1,11 +1,9 @@
 # Chapter 6 Listings
 
-This folder contains the extracted code listings for Chapter 6, "Reflection".
+This folder contains the code listings for Chapter 6.
 
-Source PDF:
-- `01-ch06_kapoor-Google-Docs-1-.pdf`
 
-The files use the repository's flat `listing_6_x.py` naming pattern. Where the PDF presents snippets rather than complete runnable modules, the snippets are preserved as-is.
+The files use the repository's flat `listing_6_x.py` naming pattern. 
 
 | Listing | File | Description |
 |---|---|---|
@@ -35,6 +33,5 @@ The files use the repository's flat `listing_6_x.py` naming pattern. Where the P
 
 ## Notes
 
-- The PDF text layer was strong enough to preserve indentation and line structure with only light cleanup.
 - Several listings are intentionally partial examples from the book rather than complete standalone programs.
-- Listings 6.12 and 6.13 appear misaligned in the source PDF: the title for 6.12 is "Environment setup and API key loading" but the code shown is the `production_reflect(...)` loop, while the environment and key-loading code appears under Listing 6.13. The extraction preserves that numbering exactly as shown in the PDF.
+
