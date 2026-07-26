@@ -5,30 +5,38 @@ def _mock_llm(system: str, user: str, want_json: bool) -> str:
     if not want_json:
         return f"[mock-llm] response keyed on {seed[:8]}"
 
-    #A
+    # Detect what kind of JSON the caller wants from cues in the prompt
     if "draft a compliance report" in user.lower() or "draft a report" in user.lower():
-        return json.dumps({
-            "summary": "The product processes customer payment data.",
-            "clauses": [
-                {"id": "REG-1", "claim": "Encrypts data at rest.", "evidence": "uses AES-256"},
-                {"id": "REG-2", "claim": "Logs access events.", "evidence": "audit log"},
-            ],
-            "open_issues": [],
-        })
+        return json.dumps(
+            {
+                "summary": "The product processes customer payment data.",
+                "clauses": [
+                    {"id": "REG-1", "claim": "Encrypts data at rest.", "evidence": "uses AES-256"},
+                    {"id": "REG-2", "claim": "Logs access events.", "evidence": "audit log"},
+                ],
+                "open_issues": [],
+            }
+        )
 
     if "critique" in user.lower() or "evaluate" in user.lower():
-        #B
+        # Alternate between needs_revision and acceptable so the loop terminates
         status = "needs_revision" if seed[0] in "0123456789ab" else "acceptable"
-        return json.dumps({
-            "status": status,
-            "issues": ["missing cross-reference for REG-3"] if status == "needs_revision" else [],
-            "feedback": "Add an explicit reference to clause REG-3 on data retention.",
-        })
+        return json.dumps(
+            {
+                "status": status,
+                "issues": ["missing cross-reference for REG-3"]
+                if status == "needs_revision"
+                else [],
+                "feedback": "Add an explicit reference to clause REG-3 on data retention.",
+            }
+        )
 
     return json.dumps({"result": f"mock-{seed[:8]}"})
 
 
-def llm_call(system: str, user: str, schema: Optional[dict] = None, temperature: float = 0.2) -> Any:
+def llm_call(
+    system: str, user: str, schema: Optional[dict] = None, temperature: float = 0.2
+) -> Any:
     """Single entry point for all model calls in this notebook."""
     want_json = schema is not None
 
@@ -60,4 +68,4 @@ def llm_call(system: str, user: str, schema: Optional[dict] = None, temperature:
     return text
 
 
-print(llm_call("you are a test", "say hi", schema=None))  #C
+print(llm_call("you are a test", "say hi", schema=None))  # Smoke test

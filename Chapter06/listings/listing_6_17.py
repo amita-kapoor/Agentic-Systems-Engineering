@@ -35,11 +35,13 @@ class RuleValidator:
         unknown = [rc.id for rc in draft.clauses if rc.id not in all_required]
         missing = sorted(all_required - addressed)
         no_evidence = [
-            rc.id for rc in draft.clauses
+            rc.id
+            for rc in draft.clauses
             if rc.id in all_required and len(rc.evidence.strip()) < self.MIN_EVIDENCE_LEN
-        ]  #A
+        ]  # Flag clauses whose evidence is too short to be meaningful (less than 10 characters)
 
-        unsupported_compliant = []  #B
+        # Check that "compliant" claims cite at least one required evidence keyword
+        unsupported_compliant = []
         for rc in draft.clauses:
             if rc.id not in all_required:
                 continue
@@ -50,16 +52,15 @@ class RuleValidator:
                 continue
             evidence_lower = rc.evidence.lower()
             cited = [
-                key for key in clause.required_evidence
+                key
+                for key in clause.required_evidence
                 if any(token in evidence_lower for token in key.lower().split("_"))
             ]
             if not cited:
                 unsupported_compliant.append(rc.id)
 
         coverage = len(addressed) / max(len(all_required), 1)
-        is_clean = (
-            not missing and not no_evidence and not unknown and not unsupported_compliant
-        )
+        is_clean = not missing and not no_evidence and not unknown and not unsupported_compliant
 
         signal = ValidationSignal(
             missing_clauses=missing,
@@ -68,7 +69,11 @@ class RuleValidator:
             coverage_ratio=round(coverage, 2),
             is_clean=is_clean,
         )
-        signal.clauses_without_evidence = list(set(no_evidence + unsupported_compliant))  #C
+        signal.clauses_without_evidence = list(
+            set(no_evidence + unsupported_compliant)
+            # We piggyback the new check on clauses_without_evidence for compatibility, but in a
+            # real system this would be its own field with its own remediation flow
+        )
         return signal
 
 
