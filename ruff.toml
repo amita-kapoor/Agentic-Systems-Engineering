@@ -1,0 +1,30 @@
+# Ruff configuration for the book's code listings.
+#
+# These files are extracted from the manuscript, not a conventional codebase.
+# The ruleset is deliberately conservative: it catches real defects and keeps
+# formatting consistent, but does not push the listings away from the shape
+# they have on the page.
+
+line-length = 100
+target-version = "py310"
+
+extend-exclude = [".venv", "manuscript"]
+
+[lint]
+select = [
+    "E", # pycodestyle errors
+    "F", # pyflakes
+    "I", # import sorting
+]
+
+ignore = [
+    # Each listing is a standalone excerpt. Listings routinely reference names
+    # defined in an earlier listing of the same chapter (ToolMetadata, RiskLevel,
+    # ActionResult, and so on). Resolving these would mean merging listings or
+    # adding imports the book does not show, which would break correspondence
+    # with the printed page. Undefined names are expected here by design.
+    "F821",
+]
+
+[format]
+docstring-code-format = true
