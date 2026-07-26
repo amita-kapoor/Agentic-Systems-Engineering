@@ -4,17 +4,17 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class Status(str, Enum):  #A
+class Status(str, Enum):  # Structured result states
     SUCCESS = "success"
     NOT_FOUND = "not_found"
     RETRYABLE_ERROR = "retryable_error"
 
 
-class CustomerLookupInput(BaseModel):  #B
+class CustomerLookupInput(BaseModel):  # Input Schema
     customer_id: str
 
 
-class CustomerRecord(BaseModel):  #C
+class CustomerRecord(BaseModel):  # Output Schema
     customer_id: str
     name: str
     email: str
@@ -26,7 +26,7 @@ class CustomerLookupResult(BaseModel):
     error_message: Optional[str] = None
 
 
-def get_customer(input: CustomerLookupInput) -> CustomerLookupResult:  #D
+def get_customer(input: CustomerLookupInput) -> CustomerLookupResult:  # Tool implementation
     """
     Tool name: get_customer
     Description: Retrieve a customer record by unique identifier.

@@ -1,12 +1,9 @@
-import asyncio
-import time
-from enum import Enum
-from typing import Any, Literal, Optional, Type
+from typing import Optional, Type
 
 from pydantic import BaseModel, Field, model_validator
 
 
-class ToolMetadata(BaseModel):  #A
+class ToolMetadata(BaseModel):  # Responsibility: How the tool should be treated
     name: str
     description: str
     args_schema: Type[BaseModel]

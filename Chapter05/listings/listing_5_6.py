@@ -11,12 +11,12 @@ class ToolRegistry:
         self._embeddings: Optional[np.ndarray] = None
         self._model: SentenceTransformer = model
 
-    def register(self, tool: BaseTool) -> None:  #A
+    def register(
+        self, tool: BaseTool
+    ) -> None:  # Add a new tool and store its description embedding
         name = tool.metadata.name
         if name in self._tools:
-            raise ValueError(
-                f"Tool '{name}' is already registered. Use update() to replace it."
-            )
+            raise ValueError(f"Tool '{name}' is already registered. Use update() to replace it.")
 
         self._tools[name] = tool
         self._tool_names.append(name)
@@ -26,15 +26,15 @@ class ToolRegistry:
             normalize_embeddings=True,
         )
         self._embeddings = (
-            new_emb
-            if self._embeddings is None
-            else np.vstack([self._embeddings, new_emb])
+            new_emb if self._embeddings is None else np.vstack([self._embeddings, new_emb])
         )
 
-    def get(self, name: str) -> Optional[BaseTool]:  #B
+    def get(self, name: str) -> Optional[BaseTool]:  # Look up a tool by name
         return self._tools.get(name)
 
-    def search(self, query: str, top_k: int = 3) -> list[BaseTool]:  #C
+    def search(
+        self, query: str, top_k: int = 3
+    ) -> list[BaseTool]:  # Return the most relevant candidate tools for a query
         if not self._tools:
             return []
 
@@ -48,8 +48,3 @@ class ToolRegistry:
         top_indices = np.argsort(scores)[-effective_k:][::-1]
 
         return [self._tools[self._tool_names[i]] for i in top_indices]
-
-
-#A Add a new tool and store its description embedding.
-#B Look up a tool by name.
-#C Return the most relevant candidate tools for a query.
