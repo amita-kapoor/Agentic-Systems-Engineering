@@ -1,4 +1,4 @@
-from typing import Optional, Literal, cast
+from typing import cast
 
 
 class CustomerLookupAdapterV1:
@@ -10,7 +10,7 @@ class CustomerLookupAdapterV1:
     )
 
     def __init__(self, v2_tool: CustomerLookupToolV2):
-        self.v2_tool = v2_tool  #A
+        self.v2_tool = v2_tool  # Underlying implementation
 
     async def execute(self, input: CustomerLookupInputV1) -> ActionResult:
         v2_input = CustomerLookupInputV2(
@@ -22,7 +22,9 @@ class CustomerLookupAdapterV1:
         if result.status != "success":
             return result
 
-        v2_output = cast(CustomerLookupResultV2, result.output)  #B
+        v2_output = cast(
+            CustomerLookupResultV2, result.output
+        )  # Cast required because ActionResult.output is untyped (Any)
         v1_output = CustomerLookupResultV1(
             status=v2_output.status,
             customer=v2_output.customer,
@@ -33,7 +35,3 @@ class CustomerLookupAdapterV1:
             output=v1_output,
             latency_ms=result.latency_ms,
         )
-
-
-#A Underlying implementation
-#B Cast required because ActionResult.output is untyped (Any)

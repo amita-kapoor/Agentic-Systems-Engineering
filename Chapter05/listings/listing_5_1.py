@@ -11,7 +11,7 @@ class CustomerLookupResult:
         self.candidates = candidates
 
 
-result = get_customer(customer_id)  #A
+result = get_customer(customer_id)  # Caller can then react differently depending on the outcome
 
 if result.status == Status.OK:
     process_customer(result.customer)
