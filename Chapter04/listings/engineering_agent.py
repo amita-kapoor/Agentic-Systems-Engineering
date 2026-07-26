@@ -2,17 +2,17 @@ class EngineeringAgent:
     def __init__(self, llm, semantic_memory, episodic_memory=None):
         self.llm = llm
         self.semantic = semantic_memory
-        self.episodic = episodic_memory  # A
+        self.episodic = episodic_memory  # can be None
 
     def diagnose(self, logs):
         context = []
 
-        # B
+        # Semantic memory (always present)
         context.append(f"Service timeout: {self.semantic['timeout']}ms")
 
-        # C
+        # Episodic memory (optional)
         if self.episodic:
-            episode = self.episodic.retrieve("503 error")
+            episode = self.episodic.get("503 error")
             if episode:
                 context.append(f"Prior incident summary: {episode}")
 
@@ -25,8 +25,3 @@ Context:
 Explain your reasoning and propose the next step.
 """
         return self.llm(prompt)
-
-
-# A can be None
-# B Semantic memory (always present)
-# C Episodic memory (optional)
