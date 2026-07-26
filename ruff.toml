@@ -28,3 +28,11 @@ ignore = [
 
 [format]
 docstring-code-format = true
+
+# Notebooks are linted but not formatted. Ruff's notebook formatter also
+# normalises the surrounding JSON: it reindents from two spaces to nbformat's
+# one, and injects a per-cell "id" field. Both are correct, but together they
+# turn a one-line change into a diff of several thousand lines, which makes a
+# review pull request impossible to read. Format a notebook deliberately if you
+# want it, rather than as a side effect of formatting the repository.
+exclude = ["*.ipynb"]
