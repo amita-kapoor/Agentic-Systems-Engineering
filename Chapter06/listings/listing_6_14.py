@@ -5,16 +5,66 @@ def _mock_llm(system: str, user: str, want_json: bool) -> str:
     if not want_json:
         return f"[mock-llm] response keyed on {seed[:8]}"
 
-    # Detect what kind of JSON the caller wants from cues in the prompt
-    if "draft a compliance report" in user.lower() or "draft a report" in user.lower():
+    # Detect what kind of JSON the caller wants from cues in the prompt.
+    # The critic is tested first on purpose: from the second iteration onward the
+    # generator's prompt also carries a CRITIQUE FEEDBACK block, so testing for
+    # the generator first would route critic calls to the draft branch.
+    if "identify blocking issues" in user.lower():
+        # Alternate between needs_revision and acceptable so the loop terminates
+        status = "needs_revision" if seed[0] in "0123456789ab" else "acceptable"
         return json.dumps(
             {
-                "summary": "The product processes customer payment data.",
+                "status": status,
+                "blockers": [
+                    {"rule": "factual_error", "field": "clauses", "description": "placeholder"}
+                ]
+                if status == "needs_revision"
+                else [],
+                "suggestions": [],
+            }
+        )
+
+    if "draft the report now" in user.lower():
+        return json.dumps(
+            {
+                "summary": (
+                    "The product processes customer payment data. Encryption and "
+                    "access logging are evidenced; retention and cross-border "
+                    "transfer are not."
+                ),
+                # Every clause in the framework must appear, each with a
+                # compliance_status, or RuleValidator can never report a clean
+                # signal and the loop cannot terminate on success.
                 "clauses": [
-                    {"id": "REG-1", "claim": "Encrypts data at rest.", "evidence": "uses AES-256"},
-                    {"id": "REG-2", "claim": "Logs access events.", "evidence": "audit log"},
+                    {
+                        "id": "REG-1",
+                        "claim": "Payment data is encrypted at rest.",
+                        "evidence": "AES-256 at rest; cipher_name and key rotation documented.",
+                        "compliance_status": "compliant",
+                    },
+                    {
+                        "id": "REG-2",
+                        "claim": "Access to payment data is logged.",
+                        "evidence": "Access events stream to the audit log_destination.",
+                        "compliance_status": "compliant",
+                    },
+                    {
+                        "id": "REG-3",
+                        "claim": "Payment data is not retained beyond 90 days.",
+                        "evidence": "The description does not state a retention period.",
+                        "compliance_status": "insufficient_information",
+                    },
+                    {
+                        "id": "REG-4",
+                        "claim": "Cross-border transfers have a documented legal basis.",
+                        "evidence": "The description does not mention transfer destinations.",
+                        "compliance_status": "insufficient_information",
+                    },
                 ],
-                "open_issues": [],
+                "open_issues": [
+                    "Data retention practices are not documented (REG-3).",
+                    "Cross-border transfer arrangements are not documented (REG-4).",
+                ],
             }
         )
 
