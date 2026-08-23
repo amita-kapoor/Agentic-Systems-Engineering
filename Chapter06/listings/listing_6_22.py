@@ -1,4 +1,5 @@
-agent = ComplianceAgent(  #A
+# Instantiate the reflective compliance agent with planning, validation, and memory components
+agent = ComplianceAgent(
     framework=FRAMEWORK,
     validator=VALIDATOR,
     memory=MEMORY,
@@ -6,14 +7,15 @@ agent = ComplianceAgent(  #A
     max_outer_iters=2,
 )
 
-product = (  #B
+# Example product description containing both documented and undocumented compliance requirements
+product = (
     "PayLite is a small payments service that stores customer card numbers "
     "and processes transactions. Cardholder data is encrypted with AES-256. "
     "Access is logged to an internal SIEM. The team has not formally documented "
     "data retention or cross-border transfer practices."
 )
 
-result = agent.run(product)  #C
+result = agent.run(product)  # Execute the complete reflection pipeline
 
 print(f"\nFinished in {result.iterations} iterations.")
 print(f"Termination: {result.termination}")
@@ -23,7 +25,9 @@ print(f"Validator clean: {result.final_signal.is_clean}\n")
 print("Iteration history")
 print("-" * 80)
 
-for row in result.history:  #D
+for row in (
+    result.history
+):  # Inspect the iteration history to observe how feedback influences successive revisions
     issues = row["issues"] if row["issues"] else "none"
     print(
         f"outer={row['outer']} inner={row['inner']} "
@@ -34,4 +38,6 @@ for row in result.history:  #D
 print()
 print("Final report")
 print("-" * 80)
-print(json.dumps(result.final_report.model_dump(), indent=2))  #E
+print(
+    json.dumps(result.final_report.model_dump(), indent=2)
+)  # Display the final compliance report produced by the reflection loop

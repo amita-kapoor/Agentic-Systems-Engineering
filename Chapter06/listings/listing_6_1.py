@@ -1,13 +1,13 @@
-from typing import Literal, TypedDict, Callable, Any
+from typing import Any, Callable, Literal, TypedDict
 
 
-class Critique(TypedDict):  #A
+class Critique(TypedDict):  # Define the exact structure of  critique dictionary
     status: Literal["acceptable", "needs_revision"]
     issues: list[str]
     feedback: str
 
 
-example_critique: Critique = {  #B
+example_critique: Critique = {  # Example of a  structured critique output
     "status": "acceptable",
     "issues": ["missing validation", "incorrect assumption"],
     "feedback": "Explain what needs to change",

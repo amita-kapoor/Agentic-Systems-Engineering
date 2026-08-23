@@ -1,8 +1,8 @@
 @dataclass
 class EpisodicRecord:
-    task_signature: str  #A
+    task_signature: str  # Short label for the kind of task
     outcome: Literal["success", "failure"]
-    insight: str  #B
+    insight: str  # what the agent learned
     timestamp: float = field(default_factory=time.time)
 
 
