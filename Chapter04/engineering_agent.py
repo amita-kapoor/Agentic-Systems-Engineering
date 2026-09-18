@@ -12,7 +12,7 @@ class EngineeringAgent:
 
         # C
         if self.episodic:
-            episode = self.episodic.retrieve("503 error")
+            episode = self.episodic.get("503 error")
             if episode:
                 context.append(f"Prior incident summary: {episode}")
 
