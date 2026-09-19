@@ -4,13 +4,17 @@ class Critique(TypedDict):
     feedback: str
 
 
-CITABLE_FIELDS = {"summary", "clauses", "open_issues"}  #A
+CITABLE_FIELDS = {
+    "summary",
+    "clauses",
+    "open_issues",
+}  # A whitelist of fields a blocker is allowed to cite. Anything else is treated as a suggestion
 
-BLOCKER_RULES = {  #B
-    "evidence_status_mismatch",  #C
-    "summary_misrepresents",  #D
-    "open_issues_incomplete",  #E
-    "factual_error",  #F
+BLOCKER_RULES = {  # A whitelist of rule names. Maps to the same four blocker categories from before
+    "evidence_status_mismatch",  # Status contradicts evidence
+    "summary_misrepresents",  # Summary contradicts per-clause statuses
+    "open_issues_incomplete",  # Open_issues missing a non_compliant or insufficient clause
+    "factual_error",  # Contradicts product description or clause text
 }
 
 
@@ -73,7 +77,9 @@ def critic(task: dict, draft: DraftReport, signal: ValidationSignal) -> Critique
         return Critique(
             status="acceptable",
             issues=[],
-            feedback="No blockers." if not suggestions else "Suggestions: " + "; ".join(suggestions),
+            feedback="No blockers."
+            if not suggestions
+            else "Suggestions: " + "; ".join(suggestions),
         )
 
     if not signal.is_clean:

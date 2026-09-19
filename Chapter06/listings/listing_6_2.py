@@ -1,4 +1,4 @@
-from typing import Literal, TypedDict, Callable, Any
+from typing import Any, Callable, Literal, TypedDict
 
 
 class Critique(TypedDict):
@@ -19,7 +19,7 @@ def single_loop_reflect(
         critique = critic(task, output)
         if critique["status"] == "acceptable":
             return output
-        context = {  #A
+        context = {  # Only the output is revised, approach and plan unchanged
             "task": task,
             "previous_output": output,
             "critique": critique["feedback"],
