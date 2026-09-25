@@ -8,19 +8,18 @@ def search(
     if not self._tools:
         return []
 
-    #A
+    # Step 1: Filter tools based on risk level
     risk_order = list(RiskLevel)
     eligible = [
         (i, name)
         for i, name in enumerate(self._tool_names)
-        if risk_order.index(self._tools[name].metadata.risk_level)
-        <= risk_order.index(max_risk)
+        if risk_order.index(self._tools[name].metadata.risk_level) <= risk_order.index(max_risk)
     ]
 
     if not eligible:
         return []
 
-    #B
+    # Step 2: Perform semantic search on filtered tools
     indices, names = zip(*eligible)
     eligible_embs = self._embeddings[list(indices)]
 
@@ -34,7 +33,3 @@ def search(
     top_local = np.argsort(scores)[-effective_k:][::-1]
 
     return [self._tools[names[i]] for i in top_local]
-
-
-#A Step 1: Filter tools based on risk level.
-#B Step 2: Perform semantic search on filtered tools.

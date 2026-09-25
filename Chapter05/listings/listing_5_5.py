@@ -10,6 +10,7 @@ class InitiateWireTransferTool:
         name="initiate_wire_transfer",
         description="Transfer funds to an external bank account.",
         args_schema=WireTransferInput,
-        risk_level=RiskLevel.CRITICAL,  #A
-        requires_confirmation=False,  #B
+        # Raises ValueError: CRITICAL tools must require confirmation
+        risk_level=RiskLevel.CRITICAL,
+        requires_confirmation=False,  # Violates policy
     )
