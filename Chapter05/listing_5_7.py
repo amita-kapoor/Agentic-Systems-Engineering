@@ -3,6 +3,7 @@ def search(
     query: str,
     top_k: int = 3,
     max_risk: RiskLevel = RiskLevel.CRITICAL,
+    min_similarity: float = MIN_SIMILARITY,
 ) -> list[BaseTool]:
     """Return relevant tools after filtering by risk level."""
     if not self._tools:
@@ -30,10 +31,9 @@ def search(
     )[0]
 
     scores = np.dot(eligible_embs, query_emb)
-    effective_k = min(top_k, len(eligible))
-    top_local = np.argsort(scores)[-effective_k:][::-1]
+    ranked = np.argsort(scores)[::-1][:top_k]
 
-    return [self._tools[names[i]] for i in top_local]
+    return [self._tools[names[i]] for i in ranked if scores[i] >= min_similarity]
 
 
 #A Step 1: Filter tools based on risk level.
