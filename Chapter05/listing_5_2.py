@@ -26,19 +26,32 @@ class CustomerLookupResult(BaseModel):
     error_message: Optional[str] = None
 
 
-def get_customer(input: CustomerLookupInput) -> CustomerLookupResult:  #D
+CUSTOMERS = {
+    "cust_1": CustomerRecord(
+        customer_id="cust_1",
+        name="Asha Gupta",
+        email="asha@example.com"
+    )
+}
+
+
+
+def get_customer(input: CustomerLookupInput, database= CUSTOMERS) -> CustomerLookupResult:  #D
     """
     Tool name: get_customer
     Description: Retrieve a customer record by unique identifier.
     """
-    database = {
-        "cust_1": CustomerRecord(
-            customer_id="cust_1",
-            name="Asha Gupta",
-            email="asha@example.com",
-        )
-    }
-    record = database.get(input.customer_id)
-    if record is None:
+    try:
+        record = database.get(input.customer_id)
+    except ConnectionError as e: #E
+        return CustomerLookupResult(status=Status.RETRYABLE_ERROR, error_message=str(e))
+    if record is None: #F
         return CustomerLookupResult(status=Status.NOT_FOUND)
     return CustomerLookupResult(status=Status.SUCCESS, customer=record)
+
+#A Structured result states
+#B Input Schema
+#C Output Schema
+#D Tool implementation 
+#E The dependency failed; the caller may retry 
+#F The dependency worked and the record does not exist; retrying will not help
