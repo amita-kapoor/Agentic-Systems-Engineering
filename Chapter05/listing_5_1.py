@@ -1,3 +1,4 @@
+from enum import Enum
 class Status(Enum):
     OK = "ok"
     NOT_FOUND = "not_found"
