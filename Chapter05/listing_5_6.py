@@ -3,15 +3,17 @@ from typing import Optional
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
+MIN_SIMILARITY = 0.40 #A
+
 
 class ToolRegistry:
     def __init__(self, model: SentenceTransformer):
         self._tools: dict[str, BaseTool] = {}
         self._tool_names: list[str] = []
         self._embeddings: Optional[np.ndarray] = None
-        self._model: SentenceTransformer = model
+        self._model = SentenceTransformer("all-MiniLM-L6-v2") #B
 
-    def register(self, tool: BaseTool) -> None:  #A
+    def register(self, tool: BaseTool) -> None:  #C
         name = tool.metadata.name
         if name in self._tools:
             raise ValueError(
@@ -31,10 +33,10 @@ class ToolRegistry:
             else np.vstack([self._embeddings, new_emb])
         )
 
-    def get(self, name: str) -> Optional[BaseTool]:  #B
+    def get(self, name: str) -> Optional[BaseTool]:  #D
         return self._tools.get(name)
 
-    def search(self, query: str, top_k: int = 3) -> list[BaseTool]:  #C
+    def search(self, query: str, top_k: int = 3, min_similarity: float = MIN_SIMILARITY,) -> list[BaseTool]:  #E
         if not self._tools:
             return []
 
@@ -44,12 +46,17 @@ class ToolRegistry:
         )[0]
 
         scores = np.dot(self._embeddings, query_emb)
-        effective_k = min(top_k, len(self._tools))
-        top_indices = np.argsort(scores)[-effective_k:][::-1]
+        ranked = np.argsort(scores)[::-1][:top_k]
 
-        return [self._tools[self._tool_names[i]] for i in top_indices]
+        return [
+            self._tools[self._tool_names[i]]
+            for i in ranked
+            if scores[i] >= min_similarity #F
+        ]
 
-
-#A Add a new tool and store its description embedding.
-#B Look up a tool by name.
-#C Return the most relevant candidate tools for a query.
+#A Calibrated for all-MiniLM-L6-v2 and the tool descriptions in this chapter. Recalibrate for your own. 
+#B The registry loads its own embedding model, so ToolRegistry() needs no argument
+#C Add a new tool and store its description embedding.
+#D Look up a tool by name.
+#E Return the most relevant candidate tools for a query.
+#F An empty list is a valid answer: nothing registered fits the request
