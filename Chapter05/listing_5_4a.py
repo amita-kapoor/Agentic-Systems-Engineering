@@ -5,8 +5,14 @@ from typing import Any, Literal, Optional, Type
 
 from pydantic import BaseModel, Field, model_validator
 
+class RiskLevel(str, Enum): #A
+    LOW      = "low"       #B
+    MEDIUM   = "medium"    #C
+    HIGH     = "high"      #D
+    CRITICAL = "critical"  #E
 
-class ToolMetadata(BaseModel):  #A
+
+class ToolMetadata(BaseModel):  #F
     name: str
     description: str
     args_schema: Type[BaseModel]
@@ -23,6 +29,13 @@ class ToolMetadata(BaseModel):  #A
         if self.risk_level == RiskLevel.CRITICAL and not self.requires_confirmation:
             raise ValueError(
                 f"Tool '{self.name}' is CRITICAL risk but requires_confirmation=False. "
+
                 "CRITICAL tools must require human confirmation."
             )
         return self
+#A Defined first, because ToolMetadata uses it as a default value 
+#B Read-only with no side effects, so safe to retry freely 
+#C Reversible side effects; retry with an idempotency key 
+#D Irreversible side effects; log, alert, and consider human review 
+#E Financial, legal, or safety impact; human review is mandatory 
+#F Responsibility: how the tool should be treated
