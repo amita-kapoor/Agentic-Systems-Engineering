@@ -9,8 +9,14 @@ class PolicyDecision(str, Enum):
 
 class PolicyGate:
     """Reads tool metadata and returns an execution decision."""
+    def __init__(self, blocked_tools: set[str] | None = None):
+        self.blocked_tools = blocked_tools or set()
+
 
     def check(self, tool: "BaseTool") -> PolicyDecision:
+        if tool.metadata.name in self.blocked_tools: 
+            return PolicyDecision.BLOCK
+
         risk = tool.metadata.risk_level
 
         if risk == RiskLevel.CRITICAL:
