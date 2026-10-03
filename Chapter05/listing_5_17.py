@@ -16,6 +16,7 @@ class ActionEngine:
         self,
         tool_name: str,
         inputs: dict,
+        operation_id: str | None = None, #A
     ) -> ActionResult:
         tool = self.registry.get(tool_name)
 
@@ -29,4 +30,6 @@ class ActionEngine:
                 },
             )
 
-        return await self.executor.execute(tool, inputs)
+        return await self.executor.execute(tool, inputs, operation_id or str(uuid.uuid4()))
+
+#A Identifies one intended action; reuse it when retrying that action. .
