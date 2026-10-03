@@ -13,3 +13,7 @@ class InitiateWireTransferTool:
         risk_level=RiskLevel.CRITICAL,  #A
         requires_confirmation=False,  #B
     )
+
+#A Raises ValueError: CRITICAL tools must require confirmation
+#B Violates policy
+
