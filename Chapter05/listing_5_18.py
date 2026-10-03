@@ -27,17 +27,18 @@ async def demo():
     executor = SafeExecutor(store=store, circuit_breaker=breaker)
     engine = ActionEngine(registry=registry, executor=executor)
 
-    # Stage 1: candidate retrieval
+    #A 
     candidates = engine.get_candidates(
         query="look up customer account information",
         max_risk=RiskLevel.MEDIUM,
     )
     print(f"Candidates: {[t.metadata.name for t in candidates]}")
 
-    # Stage 2: model selects tool (simulated here)
+    #B 
     result = await engine.run(
         tool_name="get_customer",
         inputs={"customer_id": "cust_1"},
+        operation_id="op-001"
     )
 
     print(f"Execution status: {result.status}")
@@ -46,3 +47,6 @@ async def demo():
 
 
 asyncio.run(demo())
+
+#A  Stage 1: candidate retrieval
+#B  Stage 2: model selects tool (simulated here)
