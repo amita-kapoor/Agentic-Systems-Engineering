@@ -20,34 +20,31 @@ class CustomerRecord(BaseModel):  #C
     email: str
 
 
-class CustomerLookupResult(BaseModel):
-    status: Status
+class CustomerLookupResultV0(BaseModel):
+    status: ToolStatus
     customer: Optional[CustomerRecord] = None
     error_message: Optional[str] = None
 
-
-CUSTOMERS = {
-    "cust_1": CustomerRecord(
-        customer_id="cust_1",
-        name="Asha Gupta",
-        email="asha@example.com"
-    )
+DEFAULT_DB = {
+    "cust_1": CustomerRecord(customer_id="cust_1", name="Asha Gupta", email="asha@example.com")
 }
 
-
-
-def get_customer(input: CustomerLookupInput, database= CUSTOMERS) -> CustomerLookupResult:  #D
+def get_customer_typed(input: CustomerLookupInput, database=None) -> CustomerLookupResultV0: #D
     """
     Tool name: get_customer
     Description: Retrieve a customer record by unique identifier.
     """
+    database = DEFAULT_DB if database is None else database
     try:
         record = database.get(input.customer_id)
     except ConnectionError as e: #E
-        return CustomerLookupResult(status=Status.RETRYABLE_ERROR, error_message=str(e))
-    if record is None: #F
-        return CustomerLookupResult(status=Status.NOT_FOUND)
-    return CustomerLookupResult(status=Status.SUCCESS, customer=record)
+        # The dependency failed. Retrying may help.
+        return CustomerLookupResultV0(status=ToolStatus.RETRYABLE_ERROR, error_message=str(e))
+    if record is None:  #F
+        # The dependency worked and the record does not exist. Retrying will not help.
+        return CustomerLookupResultV0(status=ToolStatus.NOT_FOUND)
+    return CustomerLookupResultV0(status=ToolStatus.SUCCESS, customer=record)
+
 
 #A Structured result states
 #B Input Schema
